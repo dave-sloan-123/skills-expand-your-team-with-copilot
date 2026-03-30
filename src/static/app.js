@@ -569,6 +569,13 @@ document.addEventListener("DOMContentLoaded", () => {
         `
         }
       </div>
+      <div class="share-section">
+        <span class="share-label">Share:</span>
+        <button class="share-btn share-twitter" title="Share on X (Twitter)">𝕏</button>
+        <button class="share-btn share-facebook" title="Share on Facebook">f</button>
+        <button class="share-btn share-whatsapp" title="Share on WhatsApp">💬</button>
+        <button class="share-btn share-copy" title="Copy link">🔗</button>
+      </div>
     `;
 
     // Add click handlers for delete buttons
@@ -586,6 +593,40 @@ document.addEventListener("DOMContentLoaded", () => {
         });
       }
     }
+
+    // Add click handlers for share buttons
+    const shareText = `Check out "${name}" at Mergington High School! ${details.description} Schedule: ${formattedSchedule}`;
+    const shareUrl = window.location.href;
+
+    activityCard.querySelector(".share-twitter").addEventListener("click", () => {
+      const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(shareUrl)}`;
+      window.open(url, "_blank", "noopener,noreferrer");
+    });
+
+    activityCard.querySelector(".share-facebook").addEventListener("click", () => {
+      const url = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}&quote=${encodeURIComponent(shareText)}`;
+      window.open(url, "_blank", "noopener,noreferrer");
+    });
+
+    activityCard.querySelector(".share-whatsapp").addEventListener("click", () => {
+      const url = `https://wa.me/?text=${encodeURIComponent(shareText + " " + shareUrl)}`;
+      window.open(url, "_blank", "noopener,noreferrer");
+    });
+
+    activityCard.querySelector(".share-copy").addEventListener("click", (e) => {
+      const copyText = `${shareText}\n${shareUrl}`;
+      navigator.clipboard.writeText(copyText).then(() => {
+        const btn = e.currentTarget;
+        btn.textContent = "✓";
+        btn.classList.add("share-copy-success");
+        setTimeout(() => {
+          btn.textContent = "🔗";
+          btn.classList.remove("share-copy-success");
+        }, 1500);
+      }).catch(() => {
+        showMessage("Could not copy to clipboard. Please copy the link manually.", "error");
+      });
+    });
 
     activitiesList.appendChild(activityCard);
   }
